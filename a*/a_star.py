@@ -5,20 +5,19 @@ import pygame
 
 mazeX = [
     [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-    [0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
-    [0, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+    [2, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+    [2, 0, 0, 1, 0, 0, 0, 1, 0, 0],
     [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-    [0, 2, 0, 0, 0, 2, 2, 2, 0, 0],
-    [0, 0, 0, 0, 0, 0, 2, 0, 0, 0],
-    [0, 0, 1, 0, 2, 1, 0, 0, 0, 0],
-    [0, 0, 1, 0, 0, 1, 0, 0, 0, 0],
+    [0, 2, 0, 0, 0, 2, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 2, 1, 2, 0, 1, 0, 0, 2, 0],
+    [0, 0, 1, 0, 0, 1, 0, 2, 0, 0],
     [0, 0, 1, 0, 1, 1, 1, 1, 1, 1],
     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 ] 
 # 0: free spaces; 1: walls (not free); 2: stations (apples)
 
-class Node(): #current node, start node vs.. (all closed and open list)
-    
+class Node():
     """
     A node class for A* algorithm path
     parent; parent of current node
@@ -31,17 +30,17 @@ class Node(): #current node, start node vs.. (all closed and open list)
     def __init__(self, parent=None, position=None):
         self.parent = parent
         self.position = position
-
         self.g = 0
         self.h = 0
         self.f = 0
 
     def __eq__(self, other):
-
         """This is ID for nodes"""
-
         #equality is true if positions and heuristics is same
         return self.position == other.position and self.h == other.h
+
+    def __str__(self):
+        return f"Node(position={self.position}, g={self.g}, h={self.h}, f={self.f})"
 
 def path(current_node, maze):
 
@@ -215,6 +214,27 @@ def a_star(start_node, maze):
                 open_list.append(child) 
 
 def visualising(map):
+    """
+    Visualizes a given map using Pygame.
+
+    Parameters:
+    - map (list): A 2D list representing the map to be visualized. Each element in the list represents a node in the map, where the value of the element determines the color of the corresponding square in the visualization.
+
+    Returns:
+    - None
+
+    This function sets up a Pygame window and fills it with a light gray background. It then iterates over the map and creates squares on the window based on the values in the map. The color of each square is determined by the value of the corresponding element in the map. The function uses nested loops to iterate over the rows and columns of the map and calculate the position of each square on the window. The size of each square is fixed at 50x50 pixels. The function updates the display after drawing all the squares and waits for 10 seconds before closing the Pygame window.
+
+    Example usage:
+    ```
+    map = [
+        [0, 0, 0],
+        [1, 1, 0],
+        [0, 0, 2]
+    ]
+    visualizing(map)
+    ```
+    """
 
     gridDisplay = pygame.display.set_mode((500, 500))
     pygame.display.get_surface().fill((200, 200, 200))  # background
@@ -250,7 +270,7 @@ def visualising(map):
 
 
     visualizeGrid()  # call the function    
-    time.sleep(5)
+    time.sleep(10)
     pygame.display.quit()
 
 def main():
@@ -269,7 +289,7 @@ def main():
     apples_position = []
     numberof_apples = 0
 
-    # kısım kaç elma yendi vs, geliştirilebilir
+    #! kısım kaç elma yendi vs, geliştirilebilir
     for idx, x in np.ndenumerate(np.array(mazeX)):
         if x==2:
             numberof_apples += 1
@@ -285,7 +305,7 @@ def main():
         color_value +=3
 
     #burda patika yolu döndürüyor. Patika yolunu takip ederek yaptığı hareketi bulabilirsin
-    print("Patika yolu : \n", paths)
+    # print("Patika yolu : \n", paths)
     print("number of apples : ", numberof_apples)
     print("number of eats : ", total_eat)
     print("uneaten apple : ", apples_position)
@@ -293,8 +313,6 @@ def main():
     print("visited list number of nodes : \n", len(closed_list))
 
     #visualising original maze and after path 
-
-    print("haritanin ilk halini görüyorsunuz\n5 sn sonra patika yolunu çizdirecektir")
     visualising(maze_original)
     visualising(maze_path)
 
